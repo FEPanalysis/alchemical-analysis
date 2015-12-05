@@ -90,7 +90,10 @@ def readDataGromacs(P):
                      self.lv.append(elements[-len(self.lv_names):])
  
                else:
-                  snap_size.append(float(line.split()[0]))
+                  fields = numpy.array(line.split(), float)
+                  if (fields[1+self.bEnergy+len(self.lv_names):][:len(self.lv)] == 0).all():
+                     raise SystemExit("\nERROR!\nThe dE fields are all zeros, i.e A and B states are identical. Check your .mdp files.")
+                  snap_size.append(fields[0])
                   if len(snap_size) > 1:
                      self.snap_size = numpy.diff(snap_size)[0]
                      P.snap_size.append(self.snap_size)
